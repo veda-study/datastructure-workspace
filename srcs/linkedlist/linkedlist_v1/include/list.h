@@ -53,9 +53,9 @@ int size(const struct list* const l);
  * @brief           리스트의 요소 찾기
  * @param l         대상
  * @param arg       값
- * @return          찾으면(node), 못 찾으면(NULL)
+ * @return          찾으면(index), 못 찾으면(-1)
  */
-struct node* find(const struct list* const l, const int arg);
+int find(const struct list* const l, const int arg);
 
 /**
  * @brief               리스트 출력
