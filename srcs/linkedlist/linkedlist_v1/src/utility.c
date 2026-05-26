@@ -22,7 +22,7 @@ int size(const struct list* const l)
     return 0;
 }
 
-struct node* find(const struct list* const l, const int arg)
+int find(const struct list* const l, const int arg)
 {
     return NULL;
 }
