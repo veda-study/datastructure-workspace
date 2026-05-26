@@ -1,18 +1,16 @@
 #include "../include/list.h"
 
-#include <stdio.h>
-
-struct node* remove_at(struct list* const l, const int index)
+int remove_at(struct list* const l, const int index)
 {
-    return NULL;
+    return 0;
 }
 
-struct node* remove_first(struct list* const l)
+int remove_first(struct list* const l)
 {
-    return NULL;
+    return 0;
 }
 
-struct node* remove_last(struct list* const l)
+int remove_last(struct list* const l)
 {
-    return NULL;
+    return 0;
 }
