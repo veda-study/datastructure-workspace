@@ -6,7 +6,7 @@
  * @brief   함수 포인터 테이블
  * @details static으로 하나만 생성 -> 메모리 절약
  */
-static const list_ops_t _ops = {
+static const struct ops _ops = {
     .is_empty     = is_empty_impl,
     .size         = size_impl,
     .find         = find_impl,
@@ -27,12 +27,12 @@ static const list_ops_t _ops = {
     .clear        = clear_impl
 };
 
-int init_list(list_t* const list)
+int init_list(struct list* const l)
 {
     return 0;
 }
 
-int destroy_list(list_t* const list, void (*free_func)(list_node_t*))
+int destroy_list(struct list* const l, void (*free_func)(struct node*))
 {
     return 0;
 }

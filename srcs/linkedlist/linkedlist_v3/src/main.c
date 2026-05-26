@@ -6,16 +6,16 @@
 /* -------------------------------------------------------------------------
  * 1. 사용자 정의 구조체 및 콜백 함수 세팅
  * ------------------------------------------------------------------------- */
-typedef struct _student {
+struct student {
     int id;
     char name[32];
-    list_node_t node; /* 리스트와 연결될 핵심 부품 (임베딩) */
-} student_t;
+    struct node node; /* 리스트와 연결될 핵심 부품 (임베딩) */
+};
 
 /* [헬퍼] 학생 데이터 동적 할당 */
-student_t* create_student(int id, const char* name)
+struct student* create_student(int id, const char* name)
 {
-    student_t *stu = (student_t *)malloc(sizeof(student_t));
+    struct student *stu = (struct student *)malloc(sizeof(struct student));
     stu->id = id;
     strncpy(stu->name, name, sizeof(stu->name) - 1);
     stu->name[sizeof(stu->name) - 1] = '\0';
@@ -27,24 +27,24 @@ student_t* create_student(int id, const char* name)
 }
 
 /* [콜백] 노드 메모리 해제용 */
-void free_student_node(list_node_t *node) 
+void free_student_node(struct node *node) 
 {
-    student_t *target = container_of(node, student_t, node);
+    struct student *target = container_of(node, struct student, node);
     printf("  -> [자동 정리] ID: %d, Name: %s 메모리 해제\n", target->id, target->name);
     free(target);
 }
 
 /* [콜백] for_each를 위한 출력 함수 */
-void print_student_node(list_node_t *node)
+void print_student_node(struct node *node)
 {
-    student_t *stu = container_of(node, student_t, node);
+    struct student *stu = container_of(node, struct student, node);
     printf("  [학생 정보] ID: %d, Name: %s\n", stu->id, stu->name);
 }
 
 /* [콜백] find를 위한 조건 검색 (ID 비교) */
-int compare_student_id(list_node_t *node, void *arg)
+int compare_student_id(struct node *node, void *arg)
 {
-    student_t *stu = container_of(node, student_t, node);
+    struct student *stu = container_of(node, struct student, node);
     int target_id = *(int *)arg; /* void* 로 넘어온 값을 int로 캐스팅 */
     return (stu->id == target_id) ? 1 : 0; /* 일치하면 1 반환 */
 }
@@ -57,7 +57,7 @@ int main(void)
     printf("🚀 VEDA Linked List ADT 테스트 시작\n\n");
 
     /* 1. 리스트 초기화 */
-    list_t my_list;
+    struct list my_list;
     if (init_list(&my_list) != 0) {
         fprintf(stderr, "[ERROR] 리스트 초기화 실패\n");
         return 1;
@@ -65,10 +65,10 @@ int main(void)
     printf("[SUCCESS] 리스트 초기화 완료\n");
 
     /* 2. 테스트용 데이터 생성 */
-    student_t *s1 = create_student(101, "Alice");
-    student_t *s2 = create_student(102, "Bob");
-    student_t *s3 = create_student(103, "Charlie");
-    student_t *s4 = create_student(104, "Dave");
+    struct student *s1 = create_student(101, "Alice");
+    struct student *s2 = create_student(102, "Bob");
+    struct student *s3 = create_student(103, "Charlie");
+    struct student *s4 = create_student(104, "Dave");
 
     /* 3. 삽입(Insert) API 테스트 */
     printf("\n--- 📥 Insert 테스트 ---\n");
@@ -93,10 +93,10 @@ int main(void)
     /* 6. 검색(Find) API 테스트 */
     printf("\n--- 🔍 Find 테스트 ---\n");
     int search_id = 102; /* Bob 찾기 */
-    list_node_t *found_node = my_list.ops->find(&my_list, compare_student_id, &search_id);
+    struct node *found_node = my_list.ops->find(&my_list, compare_student_id, &search_id);
     
     if (found_node) {
-        student_t *found_stu = container_of(found_node, student_t, node);
+        struct student *found_stu = container_of(found_node, struct student, node);
         printf("[Find 성공] ID %d 학생을 찾았습니다! 이름: %s\n", search_id, found_stu->name);
     } else {
         printf("[Find 실패] 해당 학생이 없습니다.\n");
@@ -104,26 +104,26 @@ int main(void)
 
     /* 7. 삭제(Remove) API 테스트 (리눅스 커널 스타일 포인터 반환 적용) */
     printf("\n--- 📤 Remove & Memory Free 테스트 ---\n");
-    list_node_t *removed_node;
-    student_t *target;
+    struct node *removed_node;
+    struct student *target;
 
     /* 첫 번째 노드 삭제 (예상: Alice) */
     if ((removed_node = my_list.ops->remove_first(&my_list))) {
-        target = container_of(removed_node, student_t, node);
+        target = container_of(removed_node, struct student, node);
         printf("[Remove First] ID: %d, Name: %s 삭제\n", target->id, target->name);
         free(target); /* 사용자가 직접 해제 */
     }
 
     /* 마지막 노드 삭제 (예상: Charlie) */
     if ((removed_node = my_list.ops->remove_last(&my_list))) {
-        target = container_of(removed_node, student_t, node);
+        target = container_of(removed_node, struct student, node);
         printf("[Remove Last]  ID: %d, Name: %s 삭제\n", target->id, target->name);
         free(target);
     }
 
     /* 특정 인덱스(0) 삭제 (예상: Dave) */
     if ((removed_node = my_list.ops->remove(&my_list, 0))) {
-        target = container_of(removed_node, student_t, node);
+        target = container_of(removed_node, struct student, node);
         printf("[Remove Idx 0] ID: %d, Name: %s 삭제\n", target->id, target->name);
         free(target);
     }
